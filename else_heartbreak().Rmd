@@ -27,3 +27,35 @@ games <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidy
 
 ```
 
+
+```{r clean data}
+library(lubridate)
+
+LIS <-games %>% filter(str_detect(gamename,pattern = 'Life is Strange')) %>%
+  mutate(year_month_day = parse_date(paste0(month, " ", year),"%B %Y"), peak_avg_diff = peak - avg) %>% 
+  pivot_longer(cols=c(avg, peak_avg_diff), names_to = 'metric') %>% # 2 new columns, metric and value
+  select(gamename, year_month_day, metric,value)
+
+```
+
+
+
+```{r vis data}
+library(pacman)
+pacman::p_load(ggstream,showtext,cowplot)
+
+background <- '#99c2f2'
+palette <- c('#358bf0','#804d2e','#b51d87','#b51d87','#db8551','#1e56a6')
+
+
+LIS %>%
+  ggplot(aes(year_month_day , value , fill = interaction(metric , gamename))) +
+  geom_stream(extra_span = 0, alpha = 0.25) +
+  geom_stream(type = "ridge" , bw = 0.75) +
+  scale_fill_manual(values = palette) +
+  scale_y_continuous(labels = scales::label_number_si(), 
+                     breaks = seq(0 , 100000, 25000), 
+                     position = "right")
+
+```
+
