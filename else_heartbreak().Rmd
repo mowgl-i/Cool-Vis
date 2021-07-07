@@ -1,0 +1,29 @@
+---
+title: "else.heartbreak()"
+author: "Michael Puerto"
+date: "7/7/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+```
+
+'''
+Else.heartbreak() is a facinating gaming filled fun coding puzzles and juicy narratives. I would like to say that this is the game that encouraged me to learn more about code. 
+
+In this project, I hope to generate alot of cool plots for this game. 
+
+My first plot will be about downloads/active players YTD for the game. 
+
+'''
+
+```{r getting steam data}
+
+library(tidyverse)
+library(zoo)
+
+games <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-16/games.csv')
+
+```
+
