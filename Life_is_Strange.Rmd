@@ -1,0 +1,106 @@
+---
+title: "Life is Strange"
+author: "Michael Puerto"
+date: "7/9/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+```
+
+```{r getting steam data}
+
+library(tidyverse)
+library(zoo)
+
+gamenames <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-16/games.csv')
+
+```
+
+
+```{r clean data}
+library(lubridate)
+
+LIS <-gamenames %>% filter(str_detect(gamename,pattern = 'Life is Strange')) %>%
+  mutate(year_month_day = parse_date(paste0(month, " ", year),"%B %Y"), peak_avg_diff = peak - avg) %>% 
+  pivot_longer(cols=c(avg, peak_avg_diff), names_to = 'metric') %>% # 2 new columns, metric and value
+  select(gamename, year_month_day, metric,value) %>%
+  mutate(gamename = case_when(
+  gamename == 'Life is Strange\u0099' ~ 'Life is Strange',
+  TRUE ~ as.character(gamename)
+))
+
+LIS
+
+```
+
+
+```{r}
+test
+```
+
+
+
+
+```{r vis data}
+library(pacman)
+pacman::p_load(ggstream,showtext,cowplot,extrafont)
+
+background <- '#99c2f2'
+palette <- c('#1e56a6','#804d2e','#b51d87')
+
+
+test<-LIS %>%
+  filter(metric =='avg') %>% 
+  ggplot(aes(year_month_day , value , fill = gamename)) +
+  geom_stream(extra_span = 0, alpha = 0.25) +
+  geom_stream(type = "ridge" , bw = 0.75) +
+  scale_fill_manual(values = palette) +
+  scale_y_continuous(labels = scales::label_number_si(), 
+                     breaks = seq(0 , 100000, 25000), 
+                     position = "right")+
+  annotate("text" , x = lubridate::date("2020-03-08"), y = -100, label = "Source: streamcharts.com\nGraphic: @Mowgl_ii", 
+           hjust = 0, size = 3, color = "White" , family = "Felix Titling")+
+   annotate("text" , x = lubridate::date("2015-02-01"), y = -200, label = "average players on Steam", hjust = 0, size = 5, color = "White" , family = "Felix Titling") +
+  
+  # Legends
+  
+  ## LIS
+  
+  annotate("text" ,      x = date("2015-04-01"), y = -900, label = "Life is Strange", hjust = 0, 
+           size = 3, color = "white" , family = "Felix Titling") +
+  annotate("linerange" , x = date("2016-04-20"), ymin = -800, ymax = -1000, size = 3 , color = palette[1]) +
+
+  ## LIS BS
+  
+  annotate("text" , x = date("2016-12-01"), y = -900, label = "Life is Strange: Before the Storm", hjust = 0, 
+           size = 3, color = "white" , family = "Felix Titling") +
+  annotate("linerange" , x = date("2019-03-10"), ymin = -800, ymax = -1000, size = 3 , color = palette[3]) +
+  
+  ## LIS 2
+  
+  annotate("text" , x = date("2019-08-01"), y = -900, label = "Life is Strange 2", hjust = 0, 
+           size = 3, color = "white" , family = "Felix Titling") +
+  annotate("linerange" , x = date("2020-09-15"), ymin = -800, ymax = -1000, size = 3 , color = palette[2]) +
+  
+  
+  theme_void() +
+  theme(plot.background = element_rect(fill = background),
+        legend.position = "none",
+        axis.title = element_blank(),
+        axis.text.x = element_text(hjust = 0 , face = "bold" , size = 20 , color = "white" , family = "Felix Titling"),
+        axis.text.y.right = element_text(hjust = 0 , face = "bold" , size = 10 , color = "white" , family = "Felix Titling"),
+        panel.grid = element_blank(),
+        plot.margin = margin(2.5,1,1,0, unit = "cm"))
+
+```
+
+
+```{r}
+
+font_install("C:/Users/macia/Downloads/amatic/AmaticSC-Regular.ttf")
+
+ggdraw(test)
+
+```
