@@ -46,6 +46,8 @@ test
 ```{r vis data}
 library(pacman)
 pacman::p_load(ggstream,showtext,cowplot,extrafont)
+library(sysfonts)
+
 
 background <- '#99c2f2'
 palette <- c('#1e56a6','#804d2e','#b51d87')
@@ -60,47 +62,50 @@ test<-LIS %>%
   scale_y_continuous(labels = scales::label_number_si(), 
                      breaks = seq(0 , 100000, 25000), 
                      position = "right")+
-  annotate("text" , x = lubridate::date("2020-03-08"), y = -100, label = "Source: streamcharts.com\nGraphic: @Mowgl_ii", 
-           hjust = 0, size = 3, color = "White" , family = "Felix Titling")+
-   annotate("text" , x = lubridate::date("2015-02-01"), y = -200, label = "average players on Steam", hjust = 0, size = 5, color = "White" , family = "Felix Titling") +
+  annotate("text" , x = lubridate::date("2015-03-08"), y = -1000, label = "Source: streamcharts.com\nGraphic: @Mowgl_ii", 
+           hjust = 0, size = 3, color = "White" , family = "Ink Free")+
+   annotate("text" , x = lubridate::date("2015-02-01"), y = -250, label = "Average players on Steam", hjust = 0, size = 5, color = "White" , family = "Ink Free") +
   
   # Legends
   
   ## LIS
   
-  annotate("text" ,      x = date("2015-04-01"), y = -900, label = "Life is Strange", hjust = 0, 
-           size = 3, color = "white" , family = "Felix Titling") +
-  annotate("linerange" , x = date("2016-04-20"), ymin = -800, ymax = -1000, size = 3 , color = palette[1]) +
+  annotate("linerange" , x = seq(date('2015-04-01'),date("2015-11-20"),'days'), ymin = -500, ymax = -700, size = 3 , color = palette[1]) +
+  annotate("text" ,      x = date("2015-04-01"), y = -550, label = "LIS: 1", hjust = 0, 
+           size = 3, color = "white" , family = "Ink Free") +
+  
 
   ## LIS BS
   
-  annotate("text" , x = date("2016-12-01"), y = -900, label = "Life is Strange: Before the Storm", hjust = 0, 
-           size = 3, color = "white" , family = "Felix Titling") +
-  annotate("linerange" , x = date("2019-03-10"), ymin = -800, ymax = -1000, size = 3 , color = palette[3]) +
+  annotate("linerange" , x = seq(date('2017-02-01'),date("2018-04-10"),'days'), ymin = -500, ymax = -700, size = 3 , color = palette[3]) +
+  annotate("text" , x = date("2017-02-01"), y = -550, label = "LIS: Before the Storm", hjust = 0, 
+           size = 3, color = "white" , family = "Ink Free") +
+  
   
   ## LIS 2
   
-  annotate("text" , x = date("2019-08-01"), y = -900, label = "Life is Strange 2", hjust = 0, 
-           size = 3, color = "white" , family = "Felix Titling") +
-  annotate("linerange" , x = date("2020-09-15"), ymin = -800, ymax = -1000, size = 3 , color = palette[2]) +
+  annotate("linerange" , x = seq(date("2019-08-01"),date("2020-04-15"), 'days'), ymin = -500, ymax = -700, size = 3 , color = palette[2]) +
+   annotate("text" , x = date("2019-08-01"), y = -550, label = "LIS: 2", hjust = 0, 
+           size = 3, color = "white" , family = "Ink Free") +
+ 
   
   
   theme_void() +
   theme(plot.background = element_rect(fill = background),
         legend.position = "none",
         axis.title = element_blank(),
-        axis.text.x = element_text(hjust = 0 , face = "bold" , size = 20 , color = "white" , family = "Felix Titling"),
-        axis.text.y.right = element_text(hjust = 0 , face = "bold" , size = 10 , color = "white" , family = "Felix Titling"),
+        axis.text.x = element_text(hjust = 0 , face = "bold" , size = 20 , color = "white" , family = "Ink Free"),
+        axis.text.y.right = element_text(hjust = 0 , face = "bold" , size = 10 , color = "white" , family = "Ink Free"),
         panel.grid = element_blank(),
         plot.margin = margin(2.5,1,1,0, unit = "cm"))
 
+test
 ```
-
 
 ```{r}
-
-font_install("C:/Users/macia/Downloads/amatic/AmaticSC-Regular.ttf")
-
-ggdraw(test)
-
+ggdraw(test) +
+  draw_image('https://steamuserimages-a.akamaihd.net/ugc/857229700356630685/69EC48062FA0AFD402C93E0D2558ED3BBA6D1D7A/',x = 0.000001, y =0.45, height = 0.5,width = 0.5)
+ggsave('lisplot.png', dpi = 320,height = 10,width = 16)
 ```
+
+
