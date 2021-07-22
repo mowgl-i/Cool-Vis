@@ -37,7 +37,9 @@ LIS
 
 
 ```{r}
-test
+library(psych)
+LIS %>% filter(metric == "avg") %>% select(value) %>% min()
+
 ```
 
 
@@ -49,8 +51,8 @@ pacman::p_load(ggstream,showtext,cowplot,extrafont)
 library(sysfonts)
 
 
-background <- '#99c2f2'
-palette <- c('#1e56a6','#804d2e','#b51d87')
+background <- '#130A3C'
+palette <- c('#1e56a6','#804d2e','#9E2B96')
 
 
 test<-LIS %>%
@@ -59,43 +61,35 @@ test<-LIS %>%
   geom_stream(extra_span = 0, alpha = 0.25) +
   geom_stream(type = "ridge" , bw = 0.75) +
   scale_fill_manual(values = palette) +
-  scale_y_continuous(labels = scales::label_number_si(), 
-                     breaks = seq(0 , 100000, 25000), 
-                     position = "right")+
+  scale_y_continuous(position = "right",breaks = c(0,1000,2000))+
   annotate("text" , x = lubridate::date("2015-03-08"), y = -1000, label = "Source: streamcharts.com\nGraphic: @Mowgl_ii", 
            hjust = 0, size = 3, color = "White" , family = "Ink Free")+
-   annotate("text" , x = lubridate::date("2015-02-01"), y = -250, label = "Average players on Steam", hjust = 0, size = 5, color = "White" , family = "Ink Free") +
+   annotate("text" , x = lubridate::date("2016-07-01"), y = -1150, label = "Average players on Steam", hjust = 0, size = 17, color = "White" , family = "Ink Free") +
   
   # Legends
   
   ## LIS
   
-  annotate("linerange" , x = seq(date('2015-04-01'),date("2015-11-20"),'days'), ymin = -500, ymax = -700, size = 3 , color = palette[1]) +
-  annotate("text" ,      x = date("2015-04-01"), y = -550, label = "LIS: 1", hjust = 0, 
-           size = 3, color = "white" , family = "Ink Free") +
+  annotate("linerange" , x = seq(date('2015-10-01'),date("2016-07-01"),'days'), ymin = -800, ymax = -820, size = 3 , color = palette[1]) +
+
   
 
   ## LIS BS
   
-  annotate("linerange" , x = seq(date('2017-02-01'),date("2018-04-10"),'days'), ymin = -500, ymax = -700, size = 3 , color = palette[3]) +
-  annotate("text" , x = date("2017-02-01"), y = -550, label = "LIS: Before the Storm", hjust = 0, 
-           size = 3, color = "white" , family = "Ink Free") +
+  annotate("linerange" , x = seq(date('2017-09-01'),date("2018-06-01"),'days'), ymin = -800, ymax = -820, size = 3 , color = palette[3]) +
   
   
   ## LIS 2
   
-  annotate("linerange" , x = seq(date("2019-08-01"),date("2020-04-15"), 'days'), ymin = -500, ymax = -700, size = 3 , color = palette[2]) +
-   annotate("text" , x = date("2019-08-01"), y = -550, label = "LIS: 2", hjust = 0, 
-           size = 3, color = "white" , family = "Ink Free") +
- 
-  
+  annotate("linerange" , x = seq(date("2019-08-01"),date("2020-05-01"), 'days'), ymin = -800, ymax = -820, size = 3 , color = palette[2]) +
+
   
   theme_void() +
   theme(plot.background = element_rect(fill = background),
         legend.position = "none",
         axis.title = element_blank(),
         axis.text.x = element_text(hjust = 0 , face = "bold" , size = 20 , color = "white" , family = "Ink Free"),
-        axis.text.y.right = element_text(hjust = 0 , face = "bold" , size = 10 , color = "white" , family = "Ink Free"),
+        axis.text.y.right = element_text(hjust = 0, vjust = 0.1, face = "bold" , size = 10 , color = "white" , family = "Ink Free"),
         panel.grid = element_blank(),
         plot.margin = margin(2.5,1,1,0, unit = "cm"))
 
@@ -103,8 +97,18 @@ test
 ```
 
 ```{r}
+library(magick)
+image<-magick::image_read('https://static.wikia.nocookie.net/life-is-strange/images/f/fd/LIS2_Wolves_Transparent.png/revision/latest/scale-to-width-down/1000?cb=20180930181942')
+image<-image_negate(image)
+
+```
+
+```{r}
 ggdraw(test) +
-  draw_image('https://steamuserimages-a.akamaihd.net/ugc/857229700356630685/69EC48062FA0AFD402C93E0D2558ED3BBA6D1D7A/',x = 0.000001, y =0.45, height = 0.5,width = 0.5)
+  draw_image('https://steamuserimages-a.akamaihd.net/ugc/857229700356630685/69EC48062FA0AFD402C93E0D2558ED3BBA6D1D7A/',x = -0.09, y =0.47, height = 0.6,width = 0.6)+
+  draw_image('https://www.pikpng.com/pngl/b/213-2136410_life-is-strange-png-butterfly-from-life-is.png',height = 0.13, width = 0.13, x = 0.14,y =0.19)+
+  draw_image('https://www.pikpng.com/pngl/b/172-1727425_transparent-skull-png-life-is-strange-chloe-shirt.png',height = 0.15, width = 0.15, x = 0.41,y = 0.19)+
+  draw_image(image,height = 0.22, width = 0.22, x = 0.63,y = 0.13)
 ggsave('lisplot.png', dpi = 320,height = 10,width = 16)
 ```
 
